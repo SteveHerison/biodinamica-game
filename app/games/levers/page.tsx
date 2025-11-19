@@ -275,9 +275,9 @@ export default function LeversGame() {
                                     <p className="text-slate-200">
                                         Resposta: {question.answer}
                                     </p>
-                                    {question.explanation && (
+                                    {(question as any).explanation && (
                                         <p className="text-slate-300 mt-2 text-sm">
-                                            {question.explanation}
+                                            {(question as any).explanation}
                                         </p>
                                     )}
                                 </Card>
