@@ -43,9 +43,9 @@ function SortableItem({ id, text, isCorrect, isIncorrect, selectionNumber, onSel
         return (
             <div onClick={onSelect}>
                 <Card className={`p-2 sm:p-3 cursor-pointer transition-all ${isCorrect ? 'bg-green-900/30 border-green-500' :
-                        isIncorrect ? 'bg-red-900/30 border-red-500' :
-                            selectionNumber ? 'bg-cyan-900/30 border-cyan-500' :
-                                'bg-slate-800/50 border-slate-700 hover:border-cyan-400'
+                    isIncorrect ? 'bg-red-900/30 border-red-500' :
+                        selectionNumber ? 'bg-cyan-900/30 border-cyan-500' :
+                            'bg-slate-800/50 border-slate-700 hover:border-cyan-400'
                     }`}>
                     <div className="flex items-center justify-between gap-2">
                         <span className="text-white text-sm sm:text-base flex-1">{text}</span>
@@ -68,8 +68,8 @@ function SortableItem({ id, text, isCorrect, isIncorrect, selectionNumber, onSel
     return (
         <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
             <Card className={`p-2 sm:p-3 cursor-move hover:bg-slate-700/50 transition-colors ${isCorrect ? 'bg-green-900/30 border-green-500' :
-                    isIncorrect ? 'bg-red-900/30 border-red-500' :
-                        'bg-slate-800/50 border-slate-700'
+                isIncorrect ? 'bg-red-900/30 border-red-500' :
+                    'bg-slate-800/50 border-slate-700'
                 }`}>
                 <div className="flex items-center justify-between gap-2">
                     <span className="text-white text-sm sm:text-base">{text}</span>
@@ -81,10 +81,15 @@ function SortableItem({ id, text, isCorrect, isIncorrect, selectionNumber, onSel
     );
 }
 
+interface RightItem {
+    id: string;
+    text: string;
+}
+
 export default function MatchingGame() {
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [leftItems, setLeftItems] = useState<DroppableItem[]>([]);
-    const [rightItems, setRightItems] = useState<string[]>([]);
+    const [rightItems, setRightItems] = useState<RightItem[]>([]);
     const [showResults, setShowResults] = useState(false);
     const [score, setScore] = useState(0);
     const [isMobile, setIsMobile] = useState(false);
@@ -122,7 +127,10 @@ export default function MatchingGame() {
                 currentMatch: null
             })));
 
-            const shuffledRight = shuffledData.map(d => d.right).sort(() => Math.random() - 0.5);
+            const shuffledRight = shuffledData.map((d, idx) => ({
+                id: `right-${d.id}-${idx}`,
+                text: d.right
+            })).sort(() => Math.random() - 0.5);
             setRightItems(shuffledRight);
             setShowResults(false);
             setScore(0);
@@ -135,26 +143,26 @@ export default function MatchingGame() {
 
         if (!over) return;
 
-        const activeIndex = rightItems.indexOf(active.id as string);
-        const overIndex = rightItems.indexOf(over.id as string);
+        const activeIndex = rightItems.findIndex(item => item.id === active.id);
+        const overIndex = rightItems.findIndex(item => item.id === over.id);
 
         if (activeIndex !== overIndex) {
             setRightItems(arrayMove(rightItems, activeIndex, overIndex));
         }
     };
 
-    const handleMobileSelect = (item: string) => {
+    const handleMobileSelect = (itemId: string) => {
         if (showResults) return;
 
         playSound('click');
 
         // If already selected, remove it and all items after it
-        const currentIndex = selectedOrder.indexOf(item);
+        const currentIndex = selectedOrder.indexOf(itemId);
         if (currentIndex !== -1) {
             setSelectedOrder(selectedOrder.slice(0, currentIndex));
         } else {
             // Add to selection
-            setSelectedOrder([...selectedOrder, item]);
+            setSelectedOrder([...selectedOrder, itemId]);
         }
     };
 
@@ -162,10 +170,12 @@ export default function MatchingGame() {
         playSound('click');
         let correct = 0;
 
-        const itemsToCheck = isMobile ? selectedOrder : rightItems;
-
         leftItems.forEach((item, index) => {
-            if (item.correctMatch === itemsToCheck[index]) {
+            const rightItem = isMobile
+                ? rightItems.find(r => r.id === selectedOrder[index])
+                : rightItems[index];
+
+            if (rightItem && item.correctMatch === rightItem.text) {
                 correct++;
             }
         });
@@ -206,7 +216,10 @@ export default function MatchingGame() {
                 currentMatch: null
             })));
 
-            const shuffledRight = shuffledData.map(d => d.right).sort(() => Math.random() - 0.5);
+            const shuffledRight = shuffledData.map((d, idx) => ({
+                id: `right-${d.id}-${idx}`,
+                text: d.right
+            })).sort(() => Math.random() - 0.5);
             setRightItems(shuffledRight);
             setShowResults(false);
             setScore(0);
@@ -256,7 +269,13 @@ export default function MatchingGame() {
         );
     }
 
-    const itemsToDisplay = isMobile ? selectedOrder : rightItems;
+    const getDisplayText = (index: number): string | undefined => {
+        if (isMobile) {
+            const itemId = selectedOrder[index];
+            return rightItems.find(r => r.id === itemId)?.text;
+        }
+        return rightItems[index]?.text;
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-3 sm:p-6 md:p-8">
@@ -333,23 +352,28 @@ export default function MatchingGame() {
                     {/* Left Column (Fixed) */}
                     <div className="space-y-2 sm:space-y-3">
                         <h3 className="text-xs sm:text-sm font-semibold text-slate-400 mb-2 sm:mb-4">CONCEITOS</h3>
-                        {leftItems.map((item, index) => (
-                            <Card key={item.id} className={`p-2 sm:p-3 ${showResults && item.correctMatch === itemsToDisplay[index] ? 'bg-green-900/30 border-green-500' :
-                                    showResults && item.correctMatch !== itemsToDisplay[index] ? 'bg-red-900/30 border-red-500' :
+                        {leftItems.map((item, index) => {
+                            const displayText = getDisplayText(index);
+                            const isCorrect = showResults && item.correctMatch === displayText;
+                            const isIncorrect = showResults && item.correctMatch !== displayText;
+                            return (
+                                <Card key={item.id} className={`p-2 sm:p-3 ${isCorrect ? 'bg-green-900/30 border-green-500' :
+                                    isIncorrect ? 'bg-red-900/30 border-red-500' :
                                         'bg-slate-800/50 border-slate-700'
-                                }`}>
-                                <div className="flex items-center justify-between gap-2">
-                                    <div className="flex items-center gap-2">
-                                        <span className="w-6 h-6 rounded-full bg-slate-700 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
-                                            {index + 1}
-                                        </span>
-                                        <span className="text-sm sm:text-base">{item.text}</span>
+                                    }`}>
+                                    <div className="flex items-center justify-between gap-2">
+                                        <div className="flex items-center gap-2">
+                                            <span className="w-6 h-6 rounded-full bg-slate-700 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
+                                                {index + 1}
+                                            </span>
+                                            <span className="text-sm sm:text-base">{item.text}</span>
+                                        </div>
+                                        {isCorrect && <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-400 flex-shrink-0" />}
+                                        {isIncorrect && <X className="w-4 h-4 sm:w-5 sm:h-5 text-red-400 flex-shrink-0" />}
                                     </div>
-                                    {showResults && item.correctMatch === itemsToDisplay[index] && <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-400 flex-shrink-0" />}
-                                    {showResults && item.correctMatch !== itemsToDisplay[index] && <X className="w-4 h-4 sm:w-5 sm:h-5 text-red-400 flex-shrink-0" />}
-                                </div>
-                            </Card>
-                        ))}
+                                </Card>
+                            );
+                        })}
                     </div>
 
                     {/* Right Column */}
@@ -361,18 +385,18 @@ export default function MatchingGame() {
                             // Mobile: Click to select
                             <div className="space-y-2">
                                 {rightItems.map((item) => {
-                                    const selectionIndex = selectedOrder.indexOf(item);
+                                    const selectionIndex = selectedOrder.indexOf(item.id);
                                     const selectionNumber = selectionIndex !== -1 ? selectionIndex + 1 : undefined;
                                     return (
                                         <SortableItem
-                                            key={item}
-                                            id={item}
-                                            text={item}
+                                            key={item.id}
+                                            id={item.id}
+                                            text={item.text}
                                             selectionNumber={selectionNumber}
-                                            onSelect={() => handleMobileSelect(item)}
+                                            onSelect={() => handleMobileSelect(item.id)}
                                             isMobile={true}
-                                            isCorrect={showResults && leftItems[selectionIndex]?.correctMatch === item}
-                                            isIncorrect={showResults && selectionIndex !== -1 && leftItems[selectionIndex]?.correctMatch !== item}
+                                            isCorrect={showResults && leftItems[selectionIndex]?.correctMatch === item.text}
+                                            isIncorrect={showResults && selectionIndex !== -1 && leftItems[selectionIndex]?.correctMatch !== item.text}
                                         />
                                     );
                                 })}
@@ -380,15 +404,15 @@ export default function MatchingGame() {
                         ) : (
                             // Desktop: Drag and drop
                             <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                                <SortableContext items={rightItems} strategy={verticalListSortingStrategy}>
+                                <SortableContext items={rightItems.map(i => i.id)} strategy={verticalListSortingStrategy}>
                                     {rightItems.map((item, index) => (
                                         <SortableItem
-                                            key={item}
-                                            id={item}
-                                            text={item}
+                                            key={item.id}
+                                            id={item.id}
+                                            text={item.text}
                                             isMobile={false}
-                                            isCorrect={showResults && leftItems[index]?.correctMatch === item}
-                                            isIncorrect={showResults && leftItems[index]?.correctMatch !== item}
+                                            isCorrect={showResults && leftItems[index]?.correctMatch === item.text}
+                                            isIncorrect={showResults && leftItems[index]?.correctMatch !== item.text}
                                         />
                                     ))}
                                 </SortableContext>
