@@ -21,6 +21,8 @@ export default function LeversGame() {
     const [showFeedback, setShowFeedback] = useState(false);
     const [score, setScore] = useState(0);
     const [showTutorial, setShowTutorial] = useState(false);
+    const [correctCount, setCorrectCount] = useState(0);
+    const [incorrectCount, setIncorrectCount] = useState(0);
     const { addScore, incrementStreak, resetStreak } = useGameStore();
 
     useEffect(() => {
@@ -54,9 +56,11 @@ export default function LeversGame() {
             setScore(score + 10);
             addScore(10, 'levers');
             incrementStreak();
+            setCorrectCount(correctCount + 1);
         } else {
             playSound('incorrect');
             resetStreak();
+            setIncorrectCount(incorrectCount + 1);
         }
     };
 
@@ -78,6 +82,8 @@ export default function LeversGame() {
         setSelectedAnswer(null);
         setShowFeedback(false);
         setScore(0);
+        setCorrectCount(0);
+        setIncorrectCount(0);
     };
 
     if (!difficulty) {
@@ -123,56 +129,6 @@ export default function LeversGame() {
                         ))}
                     </div>
                 </div>
-            </div>
-        );
-    }
-
-    if (currentQuestion >= questions.length) {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-8 flex items-center justify-center">
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="max-w-2xl w-full"
-                >
-                    <Card className="p-8 bg-slate-800/50 border-slate-700 text-center">
-                        <h2 className="text-4xl font-bold mb-4">🎉 Parabéns!</h2>
-                        <p className="text-2xl mb-2">Você completou o nível <span className="text-cyan-400">{difficulty}</span>!</p>
-                        <p className="text-xl text-slate-300 mb-2">Pontuação: <span className="text-green-400 font-bold">{score}</span></p>
-                        <p className="text-sm text-slate-400 mb-8">{questions.length} questões respondidas</p>
-
-                        <div className="space-y-3">
-                            <Link href="/">
-                                <Button className="w-full" size="lg">
-                                    🏠 Voltar ao Menu Principal
-                                </Button>
-                            </Link>
-
-                            <Button
-                                onClick={() => {
-                                    setCurrentQuestion(0);
-                                    setSelectedAnswer(null);
-                                    setShowFeedback(false);
-                                    setScore(0);
-                                }}
-                                variant="outline"
-                                className="w-full"
-                                size="lg"
-                            >
-                                🔄 Jogar Este Nível Novamente
-                            </Button>
-
-                            <Button
-                                onClick={reset}
-                                variant="outline"
-                                className="w-full"
-                                size="lg"
-                            >
-                                🎯 Escolher Outro Nível
-                            </Button>
-                        </div>
-                    </Card>
-                </motion.div>
             </div>
         );
     }

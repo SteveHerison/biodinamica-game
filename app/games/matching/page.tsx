@@ -6,7 +6,7 @@ import { DndContext, DragEndEvent, closestCenter, PointerSensor, useSensor, useS
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ArrowLeft, Check, X, Shuffle } from "lucide-react";
+import { ArrowLeft, Check, X, Shuffle, HelpCircle } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -21,7 +21,15 @@ interface DroppableItem {
     currentMatch: string | null;
 }
 
-function SortableItem({ id, text, isCorrect, isIncorrect }: { id: string; text: string; isCorrect?: boolean; isIncorrect?: boolean }) {
+function SortableItem({ id, text, isCorrect, isIncorrect, selectionNumber, onSelect, isMobile }: {
+    id: string;
+    text: string;
+    isCorrect?: boolean;
+    isIncorrect?: boolean;
+    selectionNumber?: number;
+    onSelect?: () => void;
+    isMobile?: boolean;
+}) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
 
     const style = {
@@ -30,11 +38,38 @@ function SortableItem({ id, text, isCorrect, isIncorrect }: { id: string; text: 
         opacity: isDragging ? 0.5 : 1,
     };
 
+    // Mobile: clickable cards with numbers
+    if (isMobile) {
+        return (
+            <div onClick={onSelect}>
+                <Card className={`p-2 sm:p-3 cursor-pointer transition-all ${isCorrect ? 'bg-green-900/30 border-green-500' :
+                        isIncorrect ? 'bg-red-900/30 border-red-500' :
+                            selectionNumber ? 'bg-cyan-900/30 border-cyan-500' :
+                                'bg-slate-800/50 border-slate-700 hover:border-cyan-400'
+                    }`}>
+                    <div className="flex items-center justify-between gap-2">
+                        <span className="text-white text-sm sm:text-base flex-1">{text}</span>
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                            {selectionNumber && !isCorrect && !isIncorrect && (
+                                <span className="w-6 h-6 rounded-full bg-cyan-500 text-white flex items-center justify-center text-sm font-bold">
+                                    {selectionNumber}
+                                </span>
+                            )}
+                            {isCorrect && <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" />}
+                            {isIncorrect && <X className="w-4 h-4 sm:w-5 sm:h-5 text-red-400" />}
+                        </div>
+                    </div>
+                </Card>
+            </div>
+        );
+    }
+
+    // Desktop: draggable cards
     return (
         <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
             <Card className={`p-2 sm:p-3 cursor-move hover:bg-slate-700/50 transition-colors ${isCorrect ? 'bg-green-900/30 border-green-500' :
-                isIncorrect ? 'bg-red-900/30 border-red-500' :
-                    'bg-slate-800/50 border-slate-700'
+                    isIncorrect ? 'bg-red-900/30 border-red-500' :
+                        'bg-slate-800/50 border-slate-700'
                 }`}>
                 <div className="flex items-center justify-between gap-2">
                     <span className="text-white text-sm sm:text-base">{text}</span>
@@ -52,7 +87,9 @@ export default function MatchingGame() {
     const [rightItems, setRightItems] = useState<string[]>([]);
     const [showResults, setShowResults] = useState(false);
     const [score, setScore] = useState(0);
-    const { addScore, incrementStreak, resetStreak } = useGameStore();
+    const [isMobile, setIsMobile] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState<string[]>([]);
+    const { addScore, incrementStreak } = useGameStore();
 
     const sensors = useSensors(useSensor(PointerSensor));
 
@@ -62,6 +99,16 @@ export default function MatchingGame() {
         { id: "lever-example", name: "Alavanca → Exemplo", count: matchingData.filter(d => d.category === "lever-example").length },
         { id: "anatomy-definition", name: "Anatomia → Definição", count: matchingData.filter(d => d.category === "anatomy-definition").length },
     ];
+
+    useEffect(() => {
+        // Detect mobile
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     useEffect(() => {
         if (selectedCategory) {
@@ -79,6 +126,7 @@ export default function MatchingGame() {
             setRightItems(shuffledRight);
             setShowResults(false);
             setScore(0);
+            setSelectedOrder([]);
         }
     }, [selectedCategory]);
 
@@ -95,12 +143,29 @@ export default function MatchingGame() {
         }
     };
 
+    const handleMobileSelect = (item: string) => {
+        if (showResults) return;
+
+        playSound('click');
+
+        // If already selected, remove it and all items after it
+        const currentIndex = selectedOrder.indexOf(item);
+        if (currentIndex !== -1) {
+            setSelectedOrder(selectedOrder.slice(0, currentIndex));
+        } else {
+            // Add to selection
+            setSelectedOrder([...selectedOrder, item]);
+        }
+    };
+
     const checkAnswers = () => {
         playSound('click');
         let correct = 0;
 
+        const itemsToCheck = isMobile ? selectedOrder : rightItems;
+
         leftItems.forEach((item, index) => {
-            if (item.correctMatch === rightItems[index]) {
+            if (item.correctMatch === itemsToCheck[index]) {
                 correct++;
             }
         });
@@ -115,13 +180,16 @@ export default function MatchingGame() {
             incrementStreak();
         } else {
             playSound('incorrect');
-            // Don't reset streak - let them try again!
         }
     };
 
     const shuffle = () => {
         playSound('click');
-        setRightItems([...rightItems].sort(() => Math.random() - 0.5));
+        if (isMobile) {
+            setSelectedOrder([]);
+        } else {
+            setRightItems([...rightItems].sort(() => Math.random() - 0.5));
+        }
         setShowResults(false);
     };
 
@@ -142,12 +210,13 @@ export default function MatchingGame() {
             setRightItems(shuffledRight);
             setShowResults(false);
             setScore(0);
+            setSelectedOrder([]);
         }
     };
 
     if (!selectedCategory) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-8">
+            <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-4 sm:p-6 md:p-8">
                 <div className="max-w-4xl mx-auto">
                     <div className="flex items-center justify-between mb-8">
                         <Link href="/">
@@ -156,12 +225,12 @@ export default function MatchingGame() {
                                 Voltar
                             </Button>
                         </Link>
-                        <h1 className="text-3xl font-bold">Conecte os Conceitos</h1>
+                        <h1 className="text-2xl sm:text-3xl font-bold">Conecte os Conceitos</h1>
                         <div className="w-24" />
                     </div>
 
-                    <p className="text-slate-300 text-center mb-8">
-                        Escolha uma categoria e arraste os itens da direita para conectar com os da esquerda
+                    <p className="text-slate-300 text-center mb-8 text-sm sm:text-base">
+                        Escolha uma categoria e {isMobile ? 'toque nos itens na ordem correta' : 'arraste os itens da direita para conectar'}
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -187,6 +256,8 @@ export default function MatchingGame() {
         );
     }
 
+    const itemsToDisplay = isMobile ? selectedOrder : rightItems;
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-3 sm:p-6 md:p-8">
             <div className="max-w-6xl mx-auto">
@@ -210,6 +281,15 @@ export default function MatchingGame() {
                     </div>
                 </div>
 
+                {isMobile && !showResults && (
+                    <div className="mb-4 p-3 bg-cyan-900/20 border border-cyan-500/30 rounded-lg">
+                        <p className="text-cyan-300 text-sm flex items-center gap-2">
+                            <HelpCircle className="w-4 h-4" />
+                            Toque nos itens da direita na ordem correta ({selectedOrder.length}/{leftItems.length})
+                        </p>
+                    </div>
+                )}
+
                 {showResults && (
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
@@ -226,7 +306,10 @@ export default function MatchingGame() {
                             {score !== leftItems.length && (
                                 <div className="flex gap-2 justify-center mt-4">
                                     <Button
-                                        onClick={() => setShowResults(false)}
+                                        onClick={() => {
+                                            setShowResults(false);
+                                            setSelectedOrder([]);
+                                        }}
                                         variant="outline"
                                         size="sm"
                                     >
@@ -251,40 +334,76 @@ export default function MatchingGame() {
                     <div className="space-y-2 sm:space-y-3">
                         <h3 className="text-xs sm:text-sm font-semibold text-slate-400 mb-2 sm:mb-4">CONCEITOS</h3>
                         {leftItems.map((item, index) => (
-                            <Card key={item.id} className={`p-2 sm:p-3 ${showResults && item.correctMatch === rightItems[index] ? 'bg-green-900/30 border-green-500' :
-                                showResults && item.correctMatch !== rightItems[index] ? 'bg-red-900/30 border-red-500' :
-                                    'bg-slate-800/50 border-slate-700'
+                            <Card key={item.id} className={`p-2 sm:p-3 ${showResults && item.correctMatch === itemsToDisplay[index] ? 'bg-green-900/30 border-green-500' :
+                                    showResults && item.correctMatch !== itemsToDisplay[index] ? 'bg-red-900/30 border-red-500' :
+                                        'bg-slate-800/50 border-slate-700'
                                 }`}>
                                 <div className="flex items-center justify-between gap-2">
-                                    <span className="text-sm sm:text-base">{item.text}</span>
-                                    {showResults && item.correctMatch === rightItems[index] && <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-400 flex-shrink-0" />}
-                                    {showResults && item.correctMatch !== rightItems[index] && <X className="w-4 h-4 sm:w-5 sm:h-5 text-red-400 flex-shrink-0" />}
+                                    <div className="flex items-center gap-2">
+                                        <span className="w-6 h-6 rounded-full bg-slate-700 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
+                                            {index + 1}
+                                        </span>
+                                        <span className="text-sm sm:text-base">{item.text}</span>
+                                    </div>
+                                    {showResults && item.correctMatch === itemsToDisplay[index] && <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-400 flex-shrink-0" />}
+                                    {showResults && item.correctMatch !== itemsToDisplay[index] && <X className="w-4 h-4 sm:w-5 sm:h-5 text-red-400 flex-shrink-0" />}
                                 </div>
                             </Card>
                         ))}
                     </div>
 
-                    {/* Right Column (Draggable) */}
+                    {/* Right Column */}
                     <div className="space-y-2 sm:space-y-3">
-                        <h3 className="text-xs sm:text-sm font-semibold text-slate-400 mb-2 sm:mb-4">RESPOSTAS <span className="hidden sm:inline">(Arraste para ordenar)</span><span className="sm:hidden">(Arraste)</span></h3>
-                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                            <SortableContext items={rightItems} strategy={verticalListSortingStrategy}>
-                                {rightItems.map((item, index) => (
-                                    <SortableItem
-                                        key={item}
-                                        id={item}
-                                        text={item}
-                                        isCorrect={showResults && leftItems[index]?.correctMatch === item}
-                                        isIncorrect={showResults && leftItems[index]?.correctMatch !== item}
-                                    />
-                                ))}
-                            </SortableContext>
-                        </DndContext>
+                        <h3 className="text-xs sm:text-sm font-semibold text-slate-400 mb-2 sm:mb-4">
+                            RESPOSTAS {isMobile ? <span>(Toque na ordem)</span> : <span className="hidden sm:inline">(Arraste para ordenar)</span>}
+                        </h3>
+                        {isMobile ? (
+                            // Mobile: Click to select
+                            <div className="space-y-2">
+                                {rightItems.map((item) => {
+                                    const selectionIndex = selectedOrder.indexOf(item);
+                                    const selectionNumber = selectionIndex !== -1 ? selectionIndex + 1 : undefined;
+                                    return (
+                                        <SortableItem
+                                            key={item}
+                                            id={item}
+                                            text={item}
+                                            selectionNumber={selectionNumber}
+                                            onSelect={() => handleMobileSelect(item)}
+                                            isMobile={true}
+                                            isCorrect={showResults && leftItems[selectionIndex]?.correctMatch === item}
+                                            isIncorrect={showResults && selectionIndex !== -1 && leftItems[selectionIndex]?.correctMatch !== item}
+                                        />
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            // Desktop: Drag and drop
+                            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                                <SortableContext items={rightItems} strategy={verticalListSortingStrategy}>
+                                    {rightItems.map((item, index) => (
+                                        <SortableItem
+                                            key={item}
+                                            id={item}
+                                            text={item}
+                                            isMobile={false}
+                                            isCorrect={showResults && leftItems[index]?.correctMatch === item}
+                                            isIncorrect={showResults && leftItems[index]?.correctMatch !== item}
+                                        />
+                                    ))}
+                                </SortableContext>
+                            </DndContext>
+                        )}
                     </div>
                 </div>
 
                 <div className="mt-8 text-center">
-                    <Button size="lg" onClick={checkAnswers} className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600">
+                    <Button
+                        size="lg"
+                        onClick={checkAnswers}
+                        disabled={isMobile && selectedOrder.length !== leftItems.length}
+                        className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600"
+                    >
                         Verificar Respostas
                     </Button>
                 </div>
