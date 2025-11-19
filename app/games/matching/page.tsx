@@ -32,14 +32,14 @@ function SortableItem({ id, text, isCorrect, isIncorrect }: { id: string; text: 
 
     return (
         <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-            <Card className={`p-4 cursor-move hover:bg-slate-700/50 transition-colors ${isCorrect ? 'bg-green-900/30 border-green-500' :
+            <Card className={`p-2 sm:p-3 cursor-move hover:bg-slate-700/50 transition-colors ${isCorrect ? 'bg-green-900/30 border-green-500' :
                 isIncorrect ? 'bg-red-900/30 border-red-500' :
                     'bg-slate-800/50 border-slate-700'
                 }`}>
-                <div className="flex items-center justify-between">
-                    <span className="text-white">{text}</span>
-                    {isCorrect && <Check className="w-5 h-5 text-green-400" />}
-                    {isIncorrect && <X className="w-5 h-5 text-red-400" />}
+                <div className="flex items-center justify-between gap-2">
+                    <span className="text-white text-sm sm:text-base">{text}</span>
+                    {isCorrect && <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-400 flex-shrink-0" />}
+                    {isIncorrect && <X className="w-4 h-4 sm:w-5 sm:h-5 text-red-400 flex-shrink-0" />}
                 </div>
             </Card>
         </div>
@@ -188,22 +188,23 @@ export default function MatchingGame() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-3 sm:p-6 md:p-8">
             <div className="max-w-6xl mx-auto">
-                <div className="flex items-center justify-between mb-8">
-                    <Button variant="ghost" className="text-slate-300 hover:text-white" onClick={() => setSelectedCategory(null)}>
-                        <ArrowLeft className="w-4 h-4 mr-2" />
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 sm:mb-6">
+                    <Button variant="ghost" className="text-slate-300 hover:text-white text-sm" onClick={() => setSelectedCategory(null)}>
+                        <ArrowLeft className="w-4 h-4 mr-1" />
                         Categorias
                     </Button>
-                    <h1 className="text-2xl font-bold">
+                    <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-center flex-1">
                         {categories.find(c => c.id === selectedCategory)?.name}
                     </h1>
-                    <div className="flex gap-2">
-                        <Button variant="outline" size="sm" onClick={shuffle}>
-                            <Shuffle className="w-4 h-4 mr-2" />
-                            Embaralhar
+                    <div className="flex gap-2 w-full sm:w-auto">
+                        <Button variant="outline" size="sm" onClick={shuffle} className="flex-1 sm:flex-none text-xs sm:text-sm">
+                            <Shuffle className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                            <span className="hidden sm:inline">Embaralhar</span>
+                            <span className="sm:hidden">🔀</span>
                         </Button>
-                        <Button variant="outline" size="sm" onClick={reset}>
+                        <Button variant="outline" size="sm" onClick={reset} className="flex-1 sm:flex-none text-xs sm:text-sm">
                             Reiniciar
                         </Button>
                     </div>
@@ -245,27 +246,27 @@ export default function MatchingGame() {
                     </motion.div>
                 )}
 
-                <div className="grid grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
                     {/* Left Column (Fixed) */}
-                    <div className="space-y-3">
-                        <h3 className="text-sm font-semibold text-slate-400 mb-4">CONCEITOS</h3>
+                    <div className="space-y-2 sm:space-y-3">
+                        <h3 className="text-xs sm:text-sm font-semibold text-slate-400 mb-2 sm:mb-4">CONCEITOS</h3>
                         {leftItems.map((item, index) => (
-                            <Card key={item.id} className={`p-4 ${showResults && item.correctMatch === rightItems[index] ? 'bg-green-900/30 border-green-500' :
+                            <Card key={item.id} className={`p-2 sm:p-3 ${showResults && item.correctMatch === rightItems[index] ? 'bg-green-900/30 border-green-500' :
                                 showResults && item.correctMatch !== rightItems[index] ? 'bg-red-900/30 border-red-500' :
                                     'bg-slate-800/50 border-slate-700'
                                 }`}>
-                                <div className="flex items-center justify-between">
-                                    <span>{item.text}</span>
-                                    {showResults && item.correctMatch === rightItems[index] && <Check className="w-5 h-5 text-green-400" />}
-                                    {showResults && item.correctMatch !== rightItems[index] && <X className="w-5 h-5 text-red-400" />}
+                                <div className="flex items-center justify-between gap-2">
+                                    <span className="text-sm sm:text-base">{item.text}</span>
+                                    {showResults && item.correctMatch === rightItems[index] && <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-400 flex-shrink-0" />}
+                                    {showResults && item.correctMatch !== rightItems[index] && <X className="w-4 h-4 sm:w-5 sm:h-5 text-red-400 flex-shrink-0" />}
                                 </div>
                             </Card>
                         ))}
                     </div>
 
                     {/* Right Column (Draggable) */}
-                    <div className="space-y-3">
-                        <h3 className="text-sm font-semibold text-slate-400 mb-4">RESPOSTAS (Arraste para ordenar)</h3>
+                    <div className="space-y-2 sm:space-y-3">
+                        <h3 className="text-xs sm:text-sm font-semibold text-slate-400 mb-2 sm:mb-4">RESPOSTAS <span className="hidden sm:inline">(Arraste para ordenar)</span><span className="sm:hidden">(Arraste)</span></h3>
                         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                             <SortableContext items={rightItems} strategy={verticalListSortingStrategy}>
                                 {rightItems.map((item, index) => (

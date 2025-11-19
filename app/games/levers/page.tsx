@@ -133,24 +133,45 @@ export default function LeversGame() {
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="text-center"
+                    className="max-w-2xl w-full"
                 >
-                    <h2 className="text-4xl font-bold mb-4">🎉 Parabéns!</h2>
-                    <p className="text-2xl mb-2">Você completou o nível {difficulty}!</p>
-                    <p className="text-xl text-slate-300 mb-8">Pontuação: {score}</p>
-                    <div className="flex gap-4 justify-center">
-                        <Button onClick={reset} size="lg">
-                            Voltar ao Menu
-                        </Button>
-                        <Button onClick={() => {
-                            setCurrentQuestion(0);
-                            setSelectedAnswer(null);
-                            setShowFeedback(false);
-                            setScore(0);
-                        }} variant="outline" size="lg">
-                            Jogar Novamente
-                        </Button>
-                    </div>
+                    <Card className="p-8 bg-slate-800/50 border-slate-700 text-center">
+                        <h2 className="text-4xl font-bold mb-4">🎉 Parabéns!</h2>
+                        <p className="text-2xl mb-2">Você completou o nível <span className="text-cyan-400">{difficulty}</span>!</p>
+                        <p className="text-xl text-slate-300 mb-2">Pontuação: <span className="text-green-400 font-bold">{score}</span></p>
+                        <p className="text-sm text-slate-400 mb-8">{questions.length} questões respondidas</p>
+
+                        <div className="space-y-3">
+                            <Link href="/">
+                                <Button className="w-full" size="lg">
+                                    🏠 Voltar ao Menu Principal
+                                </Button>
+                            </Link>
+
+                            <Button
+                                onClick={() => {
+                                    setCurrentQuestion(0);
+                                    setSelectedAnswer(null);
+                                    setShowFeedback(false);
+                                    setScore(0);
+                                }}
+                                variant="outline"
+                                className="w-full"
+                                size="lg"
+                            >
+                                🔄 Jogar Este Nível Novamente
+                            </Button>
+
+                            <Button
+                                onClick={reset}
+                                variant="outline"
+                                className="w-full"
+                                size="lg"
+                            >
+                                🎯 Escolher Outro Nível
+                            </Button>
+                        </div>
+                    </Card>
                 </motion.div>
             </div>
         );
