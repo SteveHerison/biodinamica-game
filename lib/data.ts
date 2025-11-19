@@ -113,73 +113,73 @@ export const leversData = {
         {
             id: 13,
             question: "Ao levantar um halter com o antebraço, onde o cotovelo é o fulcro, o peso do halter é a resistência e o bíceps aplica a força. Qual é a classe da alavanca?",
-            answer: "3ª classe",
+            answer: "3ª classe (interpotente)",
             type: "3" as const
         },
         {
             id: 14,
             question: "Ao empurrar o corpo para frente durante o andar (fase de impulso), o tornozelo serve como fulcro, a força vem da panturrilha e o peso corporal é a resistência. Qual é a classe de alavanca?",
-            answer: "2ª classe",
+            answer: "2ª classe (inter-resistente)",
             type: "2" as const
         },
         {
             id: 15,
             question: "Ao estender o pescoço para olhar para o teto, o fulcro está na articulação da cabeça, a resistência é o peso da cabeça e a força vem dos músculos posteriores do pescoço. Que tipo de alavanca é?",
-            answer: "1ª classe",
+            answer: "1ª classe (interfixa)",
             type: "1" as const
         },
         {
             id: 16,
             question: "Levantar o antebraço segurando um livro é um exemplo de qual tipo de alavanca?",
-            answer: "3ª classe",
+            answer: "3ª classe (interpotente)",
             type: "3" as const
         },
         {
             id: 17,
             question: "Durante a flexão plantar (apontar os dedos dos pés para baixo), que tipo de alavanca é formada?",
-            answer: "2ª classe",
+            answer: "2ª classe (inter-resistente)",
             type: "2" as const
         },
         {
             id: 18,
             question: "Ao fazer uma remada com halteres, puxando o peso em direção ao corpo, o cotovelo funciona como que tipo de alavanca?",
-            answer: "3ª classe",
+            answer: "3ª classe (interpotente)",
             type: "3" as const
         },
         {
             id: 19,
             question: "Ao inclinar a cabeça para o lado, que tipo de alavanca é formada na coluna cervical?",
-            answer: "1ª classe",
+            answer: "1ª classe (interfixa)",
             type: "1" as const
         },
         {
             id: 20,
             question: "Durante um exercício de tríceps (extensão de cotovelo), que tipo de alavanca está sendo utilizada?",
-            answer: "1ª classe",
+            answer: "1ª classe (interfixa)",
             type: "1" as const
         },
         {
             id: 21,
             question: "Ao segurar uma mochila pesada nas costas, os músculos eretores da espinha trabalham em que tipo de alavanca?",
-            answer: "3ª classe",
+            answer: "3ª classe (interpotente)",
             type: "3" as const
         },
         {
             id: 22,
             question: "Durante a dorsiflexão do tornozelo (levantar a ponta do pé), que tipo de alavanca é formada?",
-            answer: "3ª classe",
+            answer: "3ª classe (interpotente)",
             type: "3" as const
         },
         {
             id: 23,
             question: "Ao fazer abdução do ombro (levantar o braço lateralmente), que tipo de alavanca o deltóide utiliza?",
-            answer: "3ª classe",
+            answer: "3ª classe (interpotente)",
             type: "3" as const
         },
         {
             id: 24,
             question: "Durante a mastigação, quando você morde algo duro, que tipo de alavanca a mandíbula forma?",
-            answer: "3ª classe",
+            answer: "3ª classe (interpotente)",
             type: "3" as const
         }
     ],
@@ -187,74 +187,74 @@ export const leversData = {
         {
             id: 25,
             question: "Em uma escalada, o movimento de extensão do joelho feito pelo quadríceps para empurrar o corpo para cima representa qual tipo de alavanca?",
-            answer: "3ª classe",
+            answer: "3ª classe (interpotente)",
             type: "3" as const
         },
         {
             id: 26,
             question: "Durante o ato de sentar e levantar da cadeira, o movimento do tornozelo durante a subida caracteriza qual tipo de alavanca?",
-            answer: "2ª classe (quando o corpo sobe na ponta dos pés)",
+            answer: "2ª classe (inter-resistente)",
             type: "2" as const
         },
         {
             id: 27,
             question: "No movimento de extensão do cotovelo (empurrar algo), o tríceps faz força entre o fulcro (cotovelo) e a resistência (peso na mão). Que tipo de alavanca é?",
-            answer: "1ª classe",
+            answer: "1ª classe (interfixa)",
             type: "1" as const
         },
         {
             id: 28,
             question: "Ao chutar uma bola, o quadril é o fulcro, o quadríceps faz força e o peso da perna é a resistência. Qual é a classe de alavanca?",
-            answer: "3ª classe",
+            answer: "3ª classe (interpotente)",
             type: "3" as const
         },
         {
             id: 29,
             question: "Se um terapeuta segura o braço de um paciente pelo punho para avaliar a força do bíceps, que tipo de alavanca está sendo utilizada?",
-            answer: "3ª classe",
+            answer: "3ª classe (interpotente)",
             type: "3" as const
         },
         {
             id: 30,
             question: "Durante um salto vertical, na fase de impulso quando os tornozelos fazem flexão plantar explosiva, que tipo de alavanca é utilizada?",
-            answer: "2ª classe",
+            answer: "2ª classe (inter-resistente)",
             type: "2" as const
         },
         {
             id: 31,
             question: "Em um exercício de supino, quando você empurra a barra para cima, o cotovelo funciona como que tipo de alavanca?",
-            answer: "1ª classe",
+            answer: "1ª classe (interfixa)",
             type: "1" as const,
             explanation: "O tríceps (esforço) está atrás do cotovelo (fulcro), e a carga está na mão."
         },
         {
             id: 32,
             question: "Durante a corrida, na fase de balanço da perna, o quadril funciona como fulcro. Que tipo de alavanca os flexores do quadril utilizam?",
-            answer: "3ª classe",
+            answer: "3ª classe (interpotente)",
             type: "3" as const
         },
         {
             id: 33,
             question: "Ao realizar uma flexão de braço (push-up), o cotovelo funciona como que tipo de alavanca durante a fase de subida?",
-            answer: "1ª classe",
+            answer: "1ª classe (interfixa)",
             type: "1" as const
         },
         {
             id: 34,
             question: "Durante um exercício de leg press, quando você empurra a plataforma, o joelho funciona como que tipo de alavanca?",
-            answer: "3ª classe",
+            answer: "3ª classe (interpotente)",
             type: "3" as const
         },
         {
             id: 35,
             question: "Ao arremessar uma bola de beisebol, o ombro funciona como fulcro. Que tipo de alavanca os músculos do ombro utilizam?",
-            answer: "3ª classe",
+            answer: "3ª classe (interpotente)",
             type: "3" as const
         },
         {
             id: 36,
             question: "Durante um exercício de prancha (plank), os músculos abdominais trabalham para manter o tronco reto. Que tipo de alavanca é formada?",
-            answer: "3ª classe",
+            answer: "3ª classe (interpotente)",
             type: "3" as const
         }
     ]
@@ -537,7 +537,7 @@ export const movementData: MovementQuestion[] = [
         id: 7,
         title: "Prancha (Plank)",
         description: "Na posição de prancha, quais músculos são os principais estabilizadores?",
-        imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop",
+        imageUrl: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&h=400&fit=crop&auto=format&q=80",
         options: [
             { text: "Quadríceps e isquiotibiais", correct: false },
             { text: "Reto abdominal e transverso do abdômen", correct: true },
@@ -573,7 +573,7 @@ export const movementData: MovementQuestion[] = [
         id: 10,
         title: "Desenvolvimento de Ombros",
         description: "No desenvolvimento de ombros, qual é o principal movimento e músculo?",
-        imageUrl: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&h=400&fit=crop",
+        imageUrl: "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=600&h=400&fit=crop&auto=format&q=80",
         options: [
             { text: "Adução de ombro — Peitoral maior", correct: false },
             { text: "Flexão e abdução de ombro — Deltóide", correct: true },
