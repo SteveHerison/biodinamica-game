@@ -151,20 +151,22 @@ export default function LeversGame() {
                             Como Jogar: Alavancas
                         </DialogTitle>
                     </DialogHeader>
-                    <DialogDescription className="text-slate-300 space-y-4">
-                        <p>🎯 <strong>Objetivo:</strong> Identifique o tipo de alavanca (1ª, 2ª ou 3ª classe) em cada situação!</p>
+                    <DialogDescription asChild>
+                        <div className="text-slate-300 space-y-4">
+                            <p>🎯 <strong>Objetivo:</strong> Identifique o tipo de alavanca (1ª, 2ª ou 3ª classe) em cada situação!</p>
 
-                        <div className="space-y-2">
-                            <p>⚖️ <strong>Tipos de Alavanca:</strong></p>
-                            <ul className="list-disc list-inside space-y-1 ml-4 text-sm">
-                                <li><strong>1ª Classe (Interfixa):</strong> Fulcro entre força e resistência</li>
-                                <li><strong>2ª Classe (Inter-resistente):</strong> Resistência entre fulcro e força</li>
-                                <li><strong>3ª Classe (Interpotente):</strong> Força entre fulcro e resistência</li>
-                            </ul>
+                            <div className="space-y-2">
+                                <p>⚖️ <strong>Tipos de Alavanca:</strong></p>
+                                <ul className="list-disc list-inside space-y-1 ml-4 text-sm">
+                                    <li><strong>1ª Classe (Interfixa):</strong> Fulcro entre força e resistência</li>
+                                    <li><strong>2ª Classe (Inter-resistente):</strong> Resistência entre fulcro e força</li>
+                                    <li><strong>3ª Classe (Interpotente):</strong> Força entre fulcro e resistência</li>
+                                </ul>
+                            </div>
+
+                            <p className="text-sm text-slate-400">💡 Dica: Pense em onde está o ponto fixo (fulcro), onde a força é aplicada e onde está a resistência!</p>
+                            <p className="text-sm text-slate-400">💯 Pontuação: 10 pontos por acerto</p>
                         </div>
-
-                        <p className="text-sm text-slate-400">💡 Dica: Pense em onde está o ponto fixo (fulcro), onde a força é aplicada e onde está a resistência!</p>
-                        <p className="text-sm text-slate-400">💯 Pontuação: 10 pontos por acerto</p>
                     </DialogDescription>
                     <div className="flex flex-col gap-2 mt-4">
                         <Button onClick={() => hideTutorial(false)} className="w-full">
