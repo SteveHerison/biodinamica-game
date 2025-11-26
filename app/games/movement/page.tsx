@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Check, X, ZoomIn } from "lucide-react";
 import Link from "next/link";
@@ -19,10 +19,21 @@ export default function MovementGame() {
     const [showFeedback, setShowFeedback] = useState(false);
     const [score, setScore] = useState(0);
     const [zoomedImage, setZoomedImage] = useState(false);
+    const [shuffledOptions, setShuffledOptions] = useState<typeof movementData[0]['options']>([]);
     const { addScore, incrementStreak, resetStreak } = useGameStore();
 
     const question = movementData[currentQuestion];
     const progress = ((currentQuestion + 1) / movementData.length) * 100;
+
+    useEffect(() => {
+        // Shuffle options when question changes
+        const options = [...movementData[currentQuestion].options];
+        for (let i = options.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [options[i], options[j]] = [options[j], options[i]];
+        }
+        setShuffledOptions(options);
+    }, [currentQuestion]);
 
     const handleAnswer = (index: number) => {
         if (showFeedback) return;
@@ -31,7 +42,7 @@ export default function MovementGame() {
         setSelectedAnswer(index);
         setShowFeedback(true);
 
-        const isCorrect = question.options[index].correct;
+        const isCorrect = shuffledOptions[index].correct;
 
         if (isCorrect) {
             playSound('correct');
@@ -87,6 +98,8 @@ export default function MovementGame() {
         );
     }
 
+    if (shuffledOptions.length === 0) return null;
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-8">
             <div className="max-w-4xl mx-auto">
@@ -117,8 +130,6 @@ export default function MovementGame() {
                     animate={{ opacity: 1, x: 0 }}
                 >
                     <Card className="p-8 bg-slate-800/50 border-slate-700 mb-6">
-                        <h2 className="text-2xl font-bold mb-4 text-center">{question.title}</h2>
-
                         {/* Image */}
                         <div className="relative mb-6 rounded-lg overflow-hidden bg-slate-700/30 group cursor-pointer"
                             onClick={() => setZoomedImage(true)}>
@@ -137,7 +148,7 @@ export default function MovementGame() {
                         <p className="text-lg mb-6 text-slate-200">{question.description}</p>
 
                         <div className="space-y-3">
-                            {question.options.map((option, index) => {
+                            {shuffledOptions.map((option, index) => {
                                 const isSelected = selectedAnswer === index;
                                 const isCorrect = option.correct;
                                 const showCorrect = showFeedback && isCorrect;
@@ -151,8 +162,8 @@ export default function MovementGame() {
                                         whileHover={{ scale: showFeedback ? 1 : 1.02 }}
                                         whileTap={{ scale: showFeedback ? 1 : 0.98 }}
                                         className={`w-full p-4 rounded-lg border-2 transition-all text-left ${showCorrect ? 'bg-green-900/30 border-green-500' :
-                                                showIncorrect ? 'bg-red-900/30 border-red-500' :
-                                                    'bg-slate-700/30 border-slate-600 hover:border-orange-500'
+                                            showIncorrect ? 'bg-red-900/30 border-red-500' :
+                                                'bg-slate-700/30 border-slate-600 hover:border-orange-500'
                                             }`}
                                     >
                                         <div className="flex items-center justify-between">
@@ -174,14 +185,14 @@ export default function MovementGame() {
                                 exit={{ opacity: 0, y: -20 }}
                                 className="text-center"
                             >
-                                <Card className={`p-6 mb-6 ${question.options[selectedAnswer!]?.correct ? 'bg-green-900/30 border-green-500' : 'bg-red-900/30 border-red-500'
+                                <Card className={`p-6 mb-6 ${shuffledOptions[selectedAnswer!]?.correct ? 'bg-green-900/30 border-green-500' : 'bg-red-900/30 border-red-500'
                                     }`}>
                                     <p className="text-lg font-semibold">
-                                        {question.options[selectedAnswer!]?.correct ? '✅ Correto!' : '❌ Incorreto'}
+                                        {shuffledOptions[selectedAnswer!]?.correct ? '✅ Correto!' : '❌ Incorreto'}
                                     </p>
-                                    {!question.options[selectedAnswer!]?.correct && (
+                                    {!shuffledOptions[selectedAnswer!]?.correct && (
                                         <p className="text-slate-200 mt-2">
-                                            Resposta correta: {question.options.find(o => o.correct)?.text}
+                                            Resposta correta: {shuffledOptions.find(o => o.correct)?.text}
                                         </p>
                                     )}
                                 </Card>

@@ -465,7 +465,7 @@ export const movementData: MovementQuestion[] = [
         id: 1,
         title: "Agachamento",
         description: "Observe a imagem. Qual movimento está sendo realizado e qual o principal músculo ativado?",
-        imageUrl: "https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=600&h=400&fit=crop",
+        imageUrl: "/assets/movement/agachamento.jpg",
         options: [
             { text: "Flexão de quadril — Bíceps femoral", correct: false },
             { text: "Extensão de joelho — Quadríceps femoral", correct: true },
@@ -475,45 +475,9 @@ export const movementData: MovementQuestion[] = [
     },
     {
         id: 2,
-        title: "Flexão de cotovelo (Rosca de bíceps)",
-        description: "Qual o movimento mostrado na imagem e o principal músculo responsável?",
-        imageUrl: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=600&h=400&fit=crop",
-        options: [
-            { text: "Extensão de cotovelo — Tríceps braquial", correct: false },
-            { text: "Flexão de cotovelo — Bíceps braquial", correct: true },
-            { text: "Supinação do antebraço — Braquiorradial", correct: false },
-            { text: "Extensão de punho — Extensor radial", correct: false }
-        ]
-    },
-    {
-        id: 3,
-        title: "Elevação dos calcanhares",
-        description: "Observe o movimento. Qual é o nome e qual músculo principal está ativado?",
-        imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop",
-        options: [
-            { text: "Dorsiflexão — Tibial anterior", correct: false },
-            { text: "Flexão plantar — Gastrocnêmio", correct: true },
-            { text: "Flexão de joelho — Isquiotibiais", correct: false },
-            { text: "Extensão de quadril — Glúteo máximo", correct: false }
-        ]
-    },
-    {
-        id: 4,
-        title: "Corrida – fase de impulso",
-        description: "Na fase de impulso da corrida, qual movimento e qual músculo principal estão sendo utilizados?",
-        imageUrl: "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=600&h=400&fit=crop",
-        options: [
-            { text: "Flexão de quadril — Iliopsoas", correct: false },
-            { text: "Extensão de quadril — Glúteo máximo", correct: true },
-            { text: "Flexão plantar — Tibial anterior", correct: false },
-            { text: "Extensão de tronco — Eretor da espinha", correct: false }
-        ]
-    },
-    {
-        id: 5,
         title: "Abdução de ombro",
         description: "Que movimento e músculo principal estão representados na imagem?",
-        imageUrl: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&h=400&fit=crop",
+        imageUrl: "/assets/movement/biceps.jpg",
         options: [
             { text: "Flexão de ombro — Deltóide anterior", correct: false },
             { text: "Abdução de ombro — Deltóide médio", correct: true },
@@ -522,63 +486,51 @@ export const movementData: MovementQuestion[] = [
         ]
     },
     {
+        id: 3,
+        title: "Corrida – fase de impulso",
+        description: "Na fase de impulso da corrida, qual movimento e qual músculo principal estão sendo utilizados?",
+        imageUrl: "/assets/movement/corrida.jpg",
+        options: [
+            { text: "Flexão de quadril — Iliopsoas", correct: false },
+            { text: "Extensão de quadril — Glúteo máximo", correct: true },
+            { text: "Flexão plantar — Tibial anterior", correct: false },
+            { text: "Extensão de tronco — Eretor da espinha", correct: false }
+        ]
+    },
+    {
+        id: 4,
+        title: "Flexão de cotovelo",
+        description: "Qual o movimento mostrado na imagem e o principal músculo responsável?",
+        imageUrl: "/assets/movement/cotovelo.jpg",
+        options: [
+            { text: "Extensão de cotovelo — Tríceps braquial", correct: false },
+            { text: "Flexão de cotovelo — Bíceps braquial", correct: true },
+            { text: "Supinação do antebraço — Braquiorradial", correct: false },
+            { text: "Extensão de punho — Extensor radial", correct: false }
+        ]
+    },
+    {
+        id: 5,
+        title: "Elevação dos calcanhares",
+        description: "Observe o movimento. Qual é o nome e qual músculo principal está ativado?",
+        imageUrl: "/assets/movement/panturrilha.jpg",
+        options: [
+            { text: "Dorsiflexão — Tibial anterior", correct: false },
+            { text: "Flexão plantar — Gastrocnêmio", correct: true },
+            { text: "Flexão de joelho — Isquiotibiais", correct: false },
+            { text: "Extensão de quadril — Glúteo máximo", correct: false }
+        ]
+    },
+    {
         id: 6,
         title: "Flexão de Braço (Push-up)",
         description: "Durante a flexão de braço, qual é o principal movimento e músculo ativado?",
-        imageUrl: "https://images.unsplash.com/photo-1598971639058-fab3c3109a00?w=600&h=400&fit=crop",
+        imageUrl: "/assets/movement/braco.jpg",
         options: [
             { text: "Flexão de ombro — Peitoral maior", correct: true },
             { text: "Extensão de cotovelo — Bíceps braquial", correct: false },
             { text: "Abdução de ombro — Deltóide", correct: false },
             { text: "Flexão de punho — Flexores do antebraço", correct: false }
-        ]
-    },
-    {
-        id: 7,
-        title: "Prancha (Plank)",
-        description: "Na posição de prancha, quais músculos são os principais estabilizadores?",
-        imageUrl: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&h=400&fit=crop&auto=format&q=80",
-        options: [
-            { text: "Quadríceps e isquiotibiais", correct: false },
-            { text: "Reto abdominal e transverso do abdômen", correct: true },
-            { text: "Deltóides e trapézio", correct: false },
-            { text: "Glúteos e panturrilha", correct: false }
-        ]
-    },
-    {
-        id: 8,
-        title: "Remada",
-        description: "Durante uma remada, qual é o principal movimento do ombro?",
-        imageUrl: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&h=400&fit=crop",
-        options: [
-            { text: "Abdução — Deltóide médio", correct: false },
-            { text: "Extensão e adução — Latíssimo do dorso", correct: true },
-            { text: "Flexão — Peitoral maior", correct: false },
-            { text: "Rotação externa — Infraespinal", correct: false }
-        ]
-    },
-    {
-        id: 9,
-        title: "Stiff (Levantamento Terra Romeno)",
-        description: "No exercício stiff, qual é o principal movimento e músculo trabalhado?",
-        imageUrl: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&h=400&fit=crop",
-        options: [
-            { text: "Flexão de joelho — Quadríceps", correct: false },
-            { text: "Extensão de quadril — Glúteo máximo e isquiotibiais", correct: true },
-            { text: "Flexão de tronco — Reto abdominal", correct: false },
-            { text: "Extensão de tornozelo — Gastrocnêmio", correct: false }
-        ]
-    },
-    {
-        id: 10,
-        title: "Desenvolvimento de Ombros",
-        description: "No desenvolvimento de ombros, qual é o principal movimento e músculo?",
-        imageUrl: "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=600&h=400&fit=crop&auto=format&q=80",
-        options: [
-            { text: "Adução de ombro — Peitoral maior", correct: false },
-            { text: "Flexão e abdução de ombro — Deltóide", correct: true },
-            { text: "Extensão de cotovelo — Tríceps", correct: false },
-            { text: "Rotação interna — Subescapular", correct: false }
         ]
     }
 ];
